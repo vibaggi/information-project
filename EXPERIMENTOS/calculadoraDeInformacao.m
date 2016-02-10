@@ -31,8 +31,8 @@ for n = 1:numeros %numero do rato
 
     matriz = [0 0 0 0 0 0]; %criando matriz 1x6 para pode-la concatenar sem erro
 		clear T; %zerar as tentativas
-		clear USUS	;		
     clear E;
+    
     
 		try
         for s = 1:5 %numero da sessao max 5 			
@@ -68,14 +68,18 @@ for n = 1:numeros %numero do rato
          matriz = matriz(2:length(matriz(:,1)),:);
          %Inclusive a primeira linha de zeros usada para poder mesclar as matrizes some.
          I(n, 3) = matriz(1,5); %Gravando o critério do rato
-         USUS = matriz(1:(length(matriz(:,2))-1),2)+matriz(2:length(matriz(:,1)),1); %Calculando todo intervalo USUS
-         T = matriz(matriz(:,1)>=matriz(1,5)); %Separando reforço positivo
-         E = matriz(matriz(:,1)<matriz(1,5));  %Separando reforço negativo
-				 I(n, 1) = CEH_VBA_v4(T, E, USUS, 0.1, I(n,3),sigma);	%Calculando Informação do rato
-         I(n, 2) = length(matriz(:,1)); 
-			catch
+         USUST = matriz( matriz(:,1) >= matriz(:,5),2 ) + matriz( matriz(:,1) >= matriz(:,5),1 ); %Calculando todo intervalo USUS
+         USUSE = matriz( matriz(:,1) <  matriz(:,5),2 ) + matriz( matriz(:,1) <  matriz(:,5),1 );
+         T = matriz(matriz(:,1)>=matriz(:,5)); %Separando reforço positivo
+         E = matriz(matriz(:,1)<matriz(:,5));  %Separando reforço negativo
+        
+				%disp(USUST)
+        %disp(USUSE)
+      catch
 				disp(strcat('Erro no calculo de informacao. Algum dado falta rato', num2str(n)));
-			end		
-      
+			end	   
+				 
+       I(n, 1) = CEH_VBA_v4(T, E, USUST, USUSE, 0.1, I(n,3),sigma);	%Calculando Informação do rato
+       I(n, 2) = length(matriz(:,1)); 
 	end
-	
+
